@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Калькулятор</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Ваша фотография на фоне */
+            background-color: #0f172a;
+            background-image: url('WhatsApp Image 2026-09-09 at 01.03.15.jpeg'), url('bg.jpg'), url('bg.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            padding: 20px;
+        }
+
+        /* Эффект полупрозрачного стекла */
+        .calculator {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 340px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .display {
+            width: 100%;
+            height: 75px;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            color: #ffffff;
+            font-size: 36px;
+            font-weight: 600;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            overflow-x: auto;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.operator {
+            background: rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+        }
+
+        button.operator:hover {
+            background: rgba(56, 189, 248, 0.55);
+        }
+
+        button.clear {
+            background: rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+
+        button.clear:hover {
+            background: rgba(239, 68, 68, 0.55);
+        }
+
+        button.equal {
+            background: rgba(34, 197, 94, 0.45);
+            color: #86efac;
+            grid-column: span 2;
+        }
+
+        button.equal:hover {
+            background: rgba(34, 197, 94, 0.65);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="clear" onclick="deleteChar()">⌫</button>
+            <button class="operator" onclick="appendOp('%')">%</button>
+            <button class="operator" onclick="appendOp('/')">÷</button>
+
+            <button onclick="appendNum('7')">7</button>
+            <button onclick="appendNum('8')">8</button>
+            <button onclick="appendNum('9')">9</button>
+            <button class="operator" onclick="appendOp('*')">×</button>
+
+            <button onclick="appendNum('4')">4</button>
+            <button onclick="appendNum('5')">5</button>
+
+            <button onclick="appendNum('6')">6</button>
+            <button class="operator" onclick="appendOp('-')">−</button>
+
+            <button onclick="appendNum('1')">1</button>
+            <button onclick="appendNum('2')">2</button>
+            <button onclick="appendNum('3')">3</button>
+            <button class="operator" onclick="appendOp('+')">+</button>
+
+            <button onclick="appendNum('0')">0</button>
+            <button onclick="appendNum('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '0';
+
+        function updateDisplay() {
+            display.innerText = currentInput;
+        }
+
+        function appendNum(num) {
+            if (currentInput === '0' && num !== '.') {
+                currentInput = num;
+            } else {
+                if (num === '.' && currentInput.includes('.')) return;
+                currentInput += num;
+            }
+            updateDisplay();
+        }
+
+        function appendOp(op) {
+            let lastChar = currentInput.slice(-1);
+            if (['+', '-', '*', '/', '%'].includes(lastChar)) {
+                currentInput = currentInput.slice(0, -1) + op;
+            } else {
+                currentInput += op;
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            updateDisplay();
+        }
+
+        function deleteChar() {
+            if (currentInput.length === 1) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                let expression = currentInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+                currentInput = String(eval(expression));
+            } catch (e) {
+                currentInput = 'Ошибка';
+            }
+            updateDisplay();
+        }
+    </script>
+</body>
+</html>
